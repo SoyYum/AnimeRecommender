@@ -73,3 +73,19 @@
 ## Next Steps
 - Preprocess the synopsis text.
 - Prepare the text for TF-IDF vectorization.
+
+# Day 5 – NLP Preprocessing
+
+## Learned
+- Understood why NLP preprocessing is important for recommendation systems.
+- Learned tokenization using split().
+- Learned what stop words are and why they are removed.
+- Used NLTK's English stop word corpus.
+- Learned the basics of lemmatization using WordNetLemmatizer.
+- Cleaned an anime synopsis by converting to lowercase, removing stop words, and lemmatizing words.
+
+## Key Takeaways
+- Raw text cannot be directly used by ML models.
+- Preprocessing removes noise and preserves meaningful information.
+- Simple split() leaves punctuation attached, so better tokenization is needed.
+- Default lemmatization assumes nouns, so verb forms require POS information.
