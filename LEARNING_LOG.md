@@ -89,3 +89,29 @@
 - Preprocessing removes noise and preserves meaningful information.
 - Simple split() leaves punctuation attached, so better tokenization is needed.
 - Default lemmatization assumes nouns, so verb forms require POS information.
+
+## Day 6 - TF-IDF Recommendation Engine
+
+### What I Learned
+- Learned how TF-IDF converts text into numerical vectors.
+- Understood the difference between TF and IDF and why common words receive lower importance.
+- Learned how `TfidfVectorizer` builds a vocabulary and transforms every synopsis into a sparse TF-IDF vector.
+- Understood why sparse matrices are memory efficient for NLP tasks.
+- Learned how cosine similarity measures the similarity between two vectors using the angle between them.
+- Learned how `enumerate()`, `sorted()`, and `lambda` can be used to rank recommendations.
+
+### What I Built
+- Generated a TF-IDF matrix from all cleaned anime synopses.
+- Computed pairwise cosine similarity between every anime.
+- Built the first version of a content-based anime recommendation engine.
+- Given an anime title, the program finds and displays the top 10 most similar anime.
+
+### Challenges Faced
+- Understanding how TF-IDF vectors are constructed from the entire vocabulary instead of individual synopsis length.
+- Understanding how cosine similarity compares vectors.
+- Interpreting the similarity matrix and using `enumerate()` to preserve indices while sorting.
+
+### Next Steps
+- Convert the recommendation logic into reusable functions.
+- Accept user input instead of hardcoded titles.
+- Improve title searching and handle invalid inputs.
