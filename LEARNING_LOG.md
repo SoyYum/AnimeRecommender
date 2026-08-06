@@ -115,3 +115,30 @@
 - Convert the recommendation logic into reusable functions.
 - Accept user input instead of hardcoded titles.
 - Improve title searching and handle invalid inputs.
+
+## Day 7 - Improving the Recommendation Engine
+
+### What I Learned
+- Refactored the recommendation logic into a reusable function.
+- Learned the importance of separating recommendation logic from user interaction.
+- Implemented case-insensitive title searching using Pandas string methods.
+- Added partial title matching using `str.contains()`.
+- Learned how to handle multiple matching results by allowing the user to choose the intended anime.
+- Practiced returning multiple values from a function using tuple unpacking.
+
+### What I Built
+- Converted the recommender into a reusable function.
+- Added support for user input instead of hardcoded anime names.
+- Implemented case-insensitive and partial title search.
+- Added interactive selection when multiple anime titles match the search.
+- Improved the overall usability of the recommendation engine.
+
+### Challenges Faced
+- Understanding how to separate recommendation logic from the user interface.
+- Handling multiple matching titles without making incorrect assumptions.
+- Designing function return values to communicate different outcomes cleanly.
+
+### Next Steps
+- Build a web interface for the recommender.
+- Display recommendations in a browser instead of the terminal.
+- Prepare the recommendation engine for integration into a web application.
