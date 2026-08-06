@@ -142,3 +142,23 @@
 - Build a web interface for the recommender.
 - Display recommendations in a browser instead of the terminal.
 - Prepare the recommendation engine for integration into a web application.
+
+## Day 8 – Improving Search Experience
+
+### What I Learned
+- Learned the concept of fuzzy searching and why it is useful when users make spelling mistakes.
+- Explored Python's `difflib` module and understood its limitations on large datasets.
+- Learned to use the `RapidFuzz` library for approximate string matching.
+- Understood similarity scores and different scorers such as `QRatio` and `WRatio`.
+- Realized that fuzzy search is best used as a fallback rather than the primary search method.
+- Refactored the recommender by separating the search logic into a dedicated `search_anime()` function.
+
+### Improvements Made
+- Added partial title search.
+- Added fuzzy search suggestions when no exact or partial match exists.
+- Filtered low-confidence suggestions.
+- Improved the overall search pipeline and made the code cleaner and more modular.
+
+### Challenges Faced
+- Both `difflib` and `RapidFuzz` produced unexpected suggestions for some typos on a dataset containing over 25,000 anime titles.
+- Learned the importance of evaluating libraries on real datasets instead of assuming they always produce ideal results.
