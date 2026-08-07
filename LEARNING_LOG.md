@@ -162,3 +162,26 @@
 ### Challenges Faced
 - Both `difflib` and `RapidFuzz` produced unexpected suggestions for some typos on a dataset containing over 25,000 anime titles.
 - Learned the importance of evaluating libraries on real datasets instead of assuming they always produce ideal results.
+
+## Day 9 - Feature Engineering
+
+### What I learned
+- Feature engineering improves the information given to the model.
+- Combined multiple metadata fields into one text feature.
+- TF-IDF can vectorize any text, not just the synopsis.
+- Refactored the recommender into smaller functions.
+- Learned why separating search and recommendation logic leads to cleaner code.
+
+### Improvements
+- Updated cleaned_anime.csv to include:
+  - genres
+  - themes
+  - demographics
+  - source
+  - studios
+- Added combined_features.
+- Created recommend_from_index().
+- Fixed the multiple match bug.
+
+### Next
+- Build the web app using Streamlit.

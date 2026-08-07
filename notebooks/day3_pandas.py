@@ -2,4 +2,5 @@ import pandas as pd
 
 df = pd.read_csv("data/anime.csv")
 
-print(df.describe())
+df = pd.read_csv("data/cleaned_anime.csv")
+print(df.columns)
