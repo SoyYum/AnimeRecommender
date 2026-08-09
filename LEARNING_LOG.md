@@ -183,5 +183,44 @@
 - Created recommend_from_index().
 - Fixed the multiple match bug.
 
-### Next
-- Build the web app using Streamlit.
+## Day 10 - Feature Engineering & Recommender Finalization
+
+### What I did:
+- Built combined feature column using:
+  - genres (weighted x3)
+  - themes (x1)
+  - demographics, type, source, studios
+  - synopsis
+- Tuned TF-IDF vectorizer:
+  - ngram_range = (1, 2)
+  - stop_words = "english"
+  - max_df = 0.8
+  - min_df = 2
+  - max_features = 5000
+- Generated similarity matrix using cosine similarity
+- Implemented recommendation system:
+  - top 10 similar anime
+- Built search system:
+  - exact match using substring
+  - fuzzy match using RapidFuzz (QRatio)
+- Handled edge cases:
+  - multiple matches → user selection
+  - fuzzy suggestions
+  - not found case
+- Improved recommendation quality by tuning feature weights
+- Refactored code:
+  - separated logic into functions
+  - created cleaner pipeline
+
+### Key Learnings:
+- Feature weighting has huge impact on recommendation quality
+- Too much synopsis makes results noisy
+- Genres provide strong signal → need higher weight
+- TF-IDF tuning (ngrams, filtering) improves similarity quality
+- Fuzzy matching needs to be controlled (WRatio was too aggressive)
+- Clean structure makes debugging much easier
+
+### Results:
+- Recommendations feel accurate and meaningful
+- System works for real-world anime queries
+- Stable CLI-based recommender completed
