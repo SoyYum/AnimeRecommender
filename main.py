@@ -1,6 +1,10 @@
+import sys
 from src.recommender import recommend, recommend_from_index
 
-anime_name = input("Enter an anime name: ")
+if len(sys.argv) >= 2:
+    anime_name = " ".join(sys.argv[1:])
+else:
+    anime_name = input("Enter an anime name: ")
 
 status, data = recommend(anime_name)
 
@@ -22,7 +26,7 @@ elif status == "multiple":
 
     try:
         choice = int(input("\nChoose an anime: "))
-    except:
+    except ValueError:
         print("Invalid input!")
         exit()
 

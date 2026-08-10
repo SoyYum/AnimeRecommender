@@ -224,3 +224,26 @@
 - Recommendations feel accurate and meaningful
 - System works for real-world anime queries
 - Stable CLI-based recommender completed
+
+# Day 12 – CLI Interface
+
+## Learned
+- Used sys.argv to take input from terminal
+- Difference between CLI input and input()
+- Built dual input system (CLI + interactive)
+- Separated logic (recommender.py) from execution (main.py)
+
+## Built
+- CLI tool:
+  python main.py Naruto
+- Fallback:
+  python main.py → asks input
+- Handles all cases (fuzzy, multiple, success, not found)
+
+## Takeaways
+- CLI > input() for real applications
+- Supporting both is best
+- Usability matters, not just model
+
+## Result
+- Recommender is now a usable tool from terminal
