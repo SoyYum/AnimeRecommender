@@ -247,3 +247,30 @@
 
 ## Result
 - Recommender is now a usable tool from terminal
+
+# Day 13 – Feature Engineering + Model Improvement
+
+## Learned
+- Importance of feature weighting in content-based systems
+- How TF-IDF reacts to noisy/common words
+- Why plot/synopsis is useful but can introduce noise
+- Using n-grams (1,2) to capture better context
+- How stopwords affect recommendation quality
+
+## Built
+- Improved combined_features column:
+  - Repeated genres to increase importance
+  - Added themes, demographics, type, source, studios, synopsis
+- Tuned TF-IDF:
+  - ngram_range = (1,2)
+  - max_df = 0.8
+  - min_df = 2
+  - max_features = 5000
+- Fixed stop_words error (used list instead of invalid type)
+- Rebuilt similarity model successfully
+
+## Takeaways
+- Feature engineering > model complexity
+- Weighting important fields (like genres) improves relevance
+- Too much raw text (synopsis) can hurt results if not cleaned
+- Debugging sklearn errors is mostly about parameter types

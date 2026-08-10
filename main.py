@@ -21,7 +21,8 @@ elif status == "fuzzy":
 elif status == "multiple":
     print("\nMultiple matches found:\n")
 
-    for i, title in enumerate(data["title"], start=1):
+    for i, row in enumerate(data.itertuples(), start=1):
+        title = row.title_english if row.title_english != "" else row.title
         print(f"{i}. {title}")
 
     try:

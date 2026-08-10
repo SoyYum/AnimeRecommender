@@ -1,5 +1,6 @@
 import pandas as pd
 import pickle
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -16,8 +17,16 @@ df["combined_features"] = (
     df["synopsis"]
 )
 
+custom_stopwords = [
+    "life", "story", "world", "people", "man", "woman",
+    "boy", "girl", "day", "way", "new", "one",
+    "school", "student", "friend", "friends"
+]
+
+all_stopwords = list(ENGLISH_STOP_WORDS.union(custom_stopwords))
+
 vectorizer = TfidfVectorizer(
-    stop_words="english",
+    stop_words=all_stopwords,
     ngram_range=(1, 2),
     max_df=0.8,
     min_df=2,

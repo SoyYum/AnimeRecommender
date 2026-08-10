@@ -6,11 +6,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 df = pd.read_csv("data/cleaned_anime.csv")
 df = df.fillna("")
 
-df["title_lower"] = df["title"].str.lower()
+df["title"] = df["title"].str.lower().str.strip()
+df["title_english"] = df["title_english"].fillna("").str.lower().str.strip()
 
 df["combined_features"] = (
-    df["genres"] + " " + df["genres"] + " " + df["genres"] + " " +
-    df["themes"] + " " +
+    (df["genres"] + " ") * 5 +
+    (df["themes"] + " ") * 2 +
     df["demographics"] + " " +
     df["type"] + " " +
     df["source"] + " " +
@@ -29,14 +30,19 @@ vectorizer = TfidfVectorizer(
 tfidf_matrix = vectorizer.fit_transform(df["combined_features"])
 similarity = cosine_similarity(tfidf_matrix)
 
-titles = df["title_lower"].tolist()
+titles = (df["title"] + " " + df["title_english"]).tolist()
 
-
-# 🔹 Search
 def search_anime(anime_name):
-    anime_name = anime_name.lower()
+    anime_name = anime_name.lower().strip()
 
-    matches = df[df["title_lower"].str.contains(anime_name)]
+    matches = df[
+        df["title"].str.contains(anime_name, na=False) |
+        df["title_english"].str.contains(anime_name, na=False)
+    ]
+
+    matches = matches[
+        matches["type"].isin(["TV", "Movie"])
+    ]
 
     if not matches.empty:
         return "found", matches
@@ -60,7 +66,6 @@ def is_same_series(base, candidate):
     return base_main in candidate.lower()
 
 
-# 🔹 Recommend from index
 def recommend_from_index(index):
     scores = similarity[index]
 
@@ -74,7 +79,10 @@ def recommend_from_index(index):
     base_title = df.iloc[index]["title"]
 
     for idx, score in similarity_scores[1:]:
-        title = df.iloc[idx]["title"]
+        if score < 0.1:
+            continue
+        eng = df.iloc[idx]["title_english"]
+        title = eng if eng != "" else df.iloc[idx]["title"]
 
         if not is_same_series(base_title, title):
             recommendations.append(title)
