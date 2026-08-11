@@ -1,6 +1,7 @@
 import pandas as pd
 from rapidfuzz import process, fuzz
 import numpy as np
+import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -63,12 +64,60 @@ def search_anime(anime_name):
 
     return "fuzzy", suggestions
 
+def normalize_title(title):
+    title = title.lower()
+
+    remove_words = [
+        "season",
+        "2nd",
+        "3rd",
+        "4th",
+        "5th",
+        "final",
+        "part",
+        "movie",
+        "ova",
+        "ona"
+    ]
+
+    for word in remove_words:
+        title = title.replace(word, "")
+
+    title = re.sub(r'\d+', '', title)
+
+    title = re.sub(r'[^a-z ]', '', title)
+
+    return title.strip()
+
+
 def is_same_series(base, candidate):
-    base_main = base.split(":")[0].lower()
-    candidate_main = candidate.split(":")[0].lower()
 
-    return (base_main == candidate_main or base_main in candidate_main or candidate_main in base_main)
+    base = normalize_title(base)
+    candidate = normalize_title(candidate)
 
+    return (
+        base == candidate 
+        or base in candidate 
+        or candidate in base
+    )
+
+def explain_recommendation(base_idx, rec_idx):
+
+    base = df.iloc[base_idx]
+    rec = df.iloc[rec_idx]
+
+    reasons = []
+
+    if base["genres"] == rec["genres"]:
+        reasons.append("Similar genres")
+
+    if base["themes"] == rec["themes"]:
+        reasons.append("Similar themes")
+
+    if base["type"] == rec["type"]:
+        reasons.append("Same format")
+
+    return reasons
 
 def recommend_from_index(index):
     scores = similarity[index]
@@ -86,7 +135,10 @@ def recommend_from_index(index):
     recommendations = []
     base_title = df.iloc[index]["title"]
 
-    for idx, score in similarity_scores[1:]:
+    for idx, score in similarity_scores:
+
+        if idx == index:
+            continue
 
         original_title = df.iloc[idx]["title"]
 
@@ -97,7 +149,7 @@ def recommend_from_index(index):
 
         title = english_title if english_title != "" else original_title
 
-        recommendations.append(title)
+        recommendations.append((title,score))
 
         if len(recommendations) == 10:
             break

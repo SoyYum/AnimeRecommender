@@ -307,3 +307,20 @@ Hybrid scoring:
 ## Result
 - Recommender upgraded from keyword-based similarity to a hybrid semantic recommendation system
 - Anime recommendations are now based on both plot meaning and important keywords
+
+# Day 15
+
+## Completed
+- Improved recommendation filtering to reduce same-series recommendations.
+- Added title normalization and series detection logic.
+- Fixed recommendation ranking pipeline using combined TF-IDF + SBERT scores.
+- Tested recommender on multiple anime inputs.
+
+## Current Status
+- Anime recommender pipeline is working.
+- Search, embedding similarity, ranking, and filtering are functional.
+
+## Issues / Next Steps
+- Improve recommendation diversity.
+- Explore better reranking methods like MMR.
+- Improve franchise detection.

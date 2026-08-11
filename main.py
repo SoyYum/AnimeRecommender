@@ -1,5 +1,5 @@
 import sys
-from src.recommender import recommend, recommend_from_index
+from src.recommender import recommend, recommend_from_index, explain_recommendation
 
 if len(sys.argv) >= 2:
     anime_name = " ".join(sys.argv[1:])
@@ -21,8 +21,9 @@ elif status == "fuzzy":
 elif status == "multiple":
     print("\nMultiple matches found:\n")
 
-    for i, row in enumerate(data.itertuples(), start=1):
-        title = row.title_english if row.title_english != "" else row.title
+    for i, idx in enumerate(data.index, start=1):
+        row = data.loc[idx]
+        title = row["title_english"] if row["title_english"] != "" else row["title"]
         print(f"{i}. {title}")
 
     try:
@@ -36,8 +37,9 @@ elif status == "multiple":
         recommendations = recommend_from_index(selected_index)
 
         print("\nTop Recommendations:\n")
-        for i, anime in enumerate(recommendations, start=1):
+        for i, (anime, score) in enumerate(recommendations, start=1):
             print(f"{i}. {anime}")
+            print(f"   Similarity: {score:.2f}")
     else:
         print("Invalid choice!")
 
