@@ -8,8 +8,8 @@ df = pd.read_csv("data/cleaned_anime.csv")
 df = df.fillna("")
 
 df["combined_features"] = (
-    df["genres"] + " " + df["genres"] + " " + df["genres"] + " " +
-    df["themes"] + " " +
+    (df["genres"] + " ") * 5 +
+    (df["themes"] + " ") * 2 +
     df["demographics"] + " " +
     df["type"] + " " +
     df["source"] + " " +

@@ -274,3 +274,36 @@
 - Weighting important fields (like genres) improves relevance
 - Too much raw text (synopsis) can hurt results if not cleaned
 - Debugging sklearn errors is mostly about parameter types
+
+# Day 14 - Semantic Embeddings + Hybrid Recommendation
+
+## Learned
+- Understood sentence embeddings using SBERT (Sentence-BERT)
+- Learned the difference between TF-IDF and semantic embeddings
+- Learned how cosine similarity works with embedding vectors
+- Understood how batch_size helps process large datasets efficiently
+
+## Built
+- Installed and used sentence-transformers library
+- Generated SBERT embeddings using all-MiniLM-L6-v2
+- Created embeddings for all anime plots/features
+- Saved anime embeddings for future recommendations
+- Combined TF-IDF similarity and SBERT similarity using weighted scoring
+
+Hybrid scoring:
+- 40% TF-IDF similarity
+- 60% SBERT similarity
+
+- Updated recommender to rank using combined similarity scores
+- Added English title display support
+- Improved same-series filtering to avoid recommending sequels/movies of the same anime
+
+## Takeaways
+- TF-IDF understands keyword importance
+- SBERT understands semantic meaning
+- Combining both gives better recommendations than using either alone
+- Embeddings allow machines to compare meaning instead of only matching words
+
+## Result
+- Recommender upgraded from keyword-based similarity to a hybrid semantic recommendation system
+- Anime recommendations are now based on both plot meaning and important keywords

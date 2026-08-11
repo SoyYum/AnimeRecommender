@@ -1,10 +1,12 @@
 import pandas as pd
 from rapidfuzz import process, fuzz
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 df = pd.read_csv("data/cleaned_anime.csv")
 df = df.fillna("")
+embeddings = np.load("data/anime_embeddings.npy")
 
 df["title"] = df["title"].str.lower().str.strip()
 df["title_english"] = df["title_english"].fillna("").str.lower().str.strip()
@@ -63,14 +65,20 @@ def search_anime(anime_name):
 
 def is_same_series(base, candidate):
     base_main = base.split(":")[0].lower()
-    return base_main in candidate.lower()
+    candidate_main = candidate.split(":")[0].lower()
+
+    return (base_main == candidate_main or base_main in candidate_main or candidate_main in base_main)
 
 
 def recommend_from_index(index):
     scores = similarity[index]
-
+    sbert_scores = cosine_similarity([embeddings[index]],embeddings)[0]
+    final_scores = (
+        0.4 * scores +
+        0.6 * sbert_scores
+    )
     similarity_scores = sorted(
-        list(enumerate(scores)),
+        list(enumerate(final_scores)),
         key=lambda x: x[1],
         reverse=True
     )
@@ -79,17 +87,20 @@ def recommend_from_index(index):
     base_title = df.iloc[index]["title"]
 
     for idx, score in similarity_scores[1:]:
-        if score < 0.1:
-            continue
-        eng = df.iloc[idx]["title_english"]
-        title = eng if eng != "" else df.iloc[idx]["title"]
 
-        if not is_same_series(base_title, title):
-            recommendations.append(title)
+        original_title = df.iloc[idx]["title"]
+
+        if is_same_series(base_title, original_title):
+            continue
+
+        english_title = df.iloc[idx]["title_english"]
+
+        title = english_title if english_title != "" else original_title
+
+        recommendations.append(title)
 
         if len(recommendations) == 10:
             break
-
     return recommendations
 
 def recommend(anime_name):
