@@ -324,3 +324,27 @@ Hybrid scoring:
 - Improve recommendation diversity.
 - Explore better reranking methods like MMR.
 - Improve franchise detection.
+
+## Day 16 — MMR Recommendation Ranking
+
+### Objective
+Improve the recommendation system so that the final results are not only relevant to the input anime, but also diverse and less repetitive.
+
+### Work Done
+- Implemented **Maximal Marginal Relevance (MMR)** directly into the recommendation ranking process.
+- Kept the existing hybrid similarity approach using **40% TF-IDF similarity and 60% SBERT similarity**.
+- Used MMR to consider both the relevance of a candidate and its similarity to recommendations that have already been selected.
+- Tested different relevance-diversity balances using λ values of **0.9, 0.7 and 0.6**.
+- Compared the outputs and selected **λ = 0.7** because it provided a better balance between relevance and diversity.
+- Limited the MMR candidate pool to the **top 100 relevant anime** before selecting the final 10 recommendations.
+- Improved the implementation by calculating candidate embedding similarities once instead of repeatedly calculating them during the selection process.
+- Added a mapping for candidate positions to make the MMR selection process more efficient.
+- Tested the updated recommender with several queries including **Attack on Titan, One Punch Man, World Trigger, Steins;Gate, Fate, Demon Slayer, Death Note and Fullmetal Alchemist**.
+- Verified that MMR changes the ranking while still maintaining generally relevant recommendations.
+- Fixed a formatting issue in `main.py` where recommendations returned as `(title, score)` tuples were being printed directly instead of being displayed in the normal recommendation format.
+
+### Learning
+Learned how **MMR works as a re-ranking technique** and how it can be used after calculating similarity to reduce redundancy between recommendations. Also learned that increasing the relevance weight produces safer but less diverse results, while increasing the diversity weight can introduce more unrelated recommendations.
+
+### Result
+The recommender now uses a **TF-IDF + SBERT + MMR** pipeline, giving it a better balance between relevance and diversity while keeping the existing recommendation system and features intact.

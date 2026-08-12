@@ -126,16 +126,13 @@ def recommend_from_index(index):
         0.4 * scores +
         0.6 * sbert_scores
     )
-    similarity_scores = sorted(
-        list(enumerate(final_scores)),
-        key=lambda x: x[1],
-        reverse=True
-    )
+    lambda_param = 0.7
 
-    recommendations = []
     base_title = df.iloc[index]["title"]
 
-    for idx, score in similarity_scores:
+    candidates = []
+
+    for idx, score in enumerate(final_scores):
 
         if idx == index:
             continue
@@ -145,14 +142,80 @@ def recommend_from_index(index):
         if is_same_series(base_title, original_title):
             continue
 
+        candidates.append(idx)
+
+    candidates = sorted(
+        candidates,
+        key=lambda idx: final_scores[idx],
+        reverse=True
+    )[:100]
+
+    candidate_embeddings = embeddings[candidates]
+
+    candidate_similarity = cosine_similarity(candidate_embeddings)
+
+    candidate_position = {
+        idx: pos
+        for pos, idx in enumerate(candidates)
+    }
+
+    selected = []
+
+    while len(selected) < 10:
+
+        best_idx = None
+        best_score = -float("inf")
+
+        for pos, idx in enumerate(candidates):
+
+            if idx in selected:
+                continue
+
+            relevance = final_scores[idx]
+
+            if not selected:
+                redundancy = 0
+            else:
+                selected_positions = [
+                    candidate_position[selected_idx]
+                    for selected_idx in selected
+                ]
+
+                redundancy = np.max(
+                    candidate_similarity[pos, selected_positions]
+                )
+
+            mmr = (
+                lambda_param * relevance
+                - (1 - lambda_param) * redundancy
+            )
+
+            if mmr > best_score:
+                best_score = mmr
+                best_idx = idx
+
+        if best_idx is None:
+            break
+
+        selected.append(best_idx)
+
+    recommendations = []
+
+    for idx in selected:
+
+        original_title = df.iloc[idx]["title"]
         english_title = df.iloc[idx]["title_english"]
 
-        title = english_title if english_title != "" else original_title
+        title = (
+            english_title
+            if english_title != ""
+            else original_title
+        )
 
-        recommendations.append((title,score))
+        recommendations.append(
+            (title, final_scores[idx])
+        )
 
-        if len(recommendations) == 10:
-            break
     return recommendations
 
 def recommend(anime_name):

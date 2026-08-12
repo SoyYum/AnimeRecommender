@@ -46,5 +46,6 @@ elif status == "multiple":
 elif status == "success":
     print("\nTop Recommendations:\n")
 
-    for i, anime in enumerate(data, start=1):
+    for i, (anime, score) in enumerate(data, start=1):
         print(f"{i}. {anime}")
+        print(f"   Similarity: {score:.2f}")
