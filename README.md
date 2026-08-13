@@ -319,3 +319,7 @@ IIT Patna
 ## 📜 License
 
 This project is created for educational and portfolio purposes.
+
+## Live Demo
+
+https://weebwise-cfv7jvafbq3cjccpuagwde.streamlit.app/
