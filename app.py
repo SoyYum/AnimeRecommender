@@ -674,7 +674,7 @@ with st.form("recommend_form"):
     )
 
     submitted = st.form_submit_button(
-        "✨ Recommend Anime"
+        "Recommend Anime"
     )
 
 
@@ -751,7 +751,7 @@ elif status == "fuzzy":
     )
 
     if st.button(
-        "✨ Recommend",
+        "Recommend",
         key="fuzzy_recommend"
     ):
 
@@ -791,7 +791,7 @@ elif status == "fuzzy":
 elif status == "multiple":
 
     st.markdown(
-        '<div class="section-title">🎯 Multiple matches found</div>',
+        '<div class="section-title"> Multiple matches found</div>',
         unsafe_allow_html=True
     )
 
@@ -827,7 +827,7 @@ elif status == "multiple":
     )
 
     if st.button(
-        "✨ Recommend",
+        "Recommend",
         key="multiple_recommend"
     ):
 
