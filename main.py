@@ -1,15 +1,22 @@
 import sys
-from src.recommender import recommend, recommend_from_index, explain_recommendation
+from src.recommender import recommend, recommend_from_index, recommend_from_query
 
 if len(sys.argv) >= 2:
-    anime_name = " ".join(sys.argv[1:])
+    user_input = " ".join(sys.argv[1:])
 else:
-    anime_name = input("Enter an anime name: ")
+    user_input = input("Enter an anime name or description: ")
 
-status, data = recommend(anime_name)
+status, data = recommend(user_input)
 
 if status == "not_found":
-    print("Anime not found!")
+    recommendations = recommend_from_query(user_input)
+
+    print("\nTop Recommendations:\n")
+
+    for i, (anime, score, reasons) in enumerate(recommendations, start=1):
+        print(f"{i}. {anime}")
+        print(f"   Similarity: {score:.2f}")
+        print(f"   Why: {' | '.join(reasons)}")
 
 elif status == "fuzzy":
     print("\nAnime not found!")
@@ -37,15 +44,18 @@ elif status == "multiple":
         recommendations = recommend_from_index(selected_index)
 
         print("\nTop Recommendations:\n")
-        for i, (anime, score) in enumerate(recommendations, start=1):
+
+        for i, (anime, score, reasons) in enumerate(recommendations, start=1):
             print(f"{i}. {anime}")
             print(f"   Similarity: {score:.2f}")
+            print(f"   Why: {' | '.join(reasons)}")
     else:
         print("Invalid choice!")
 
 elif status == "success":
     print("\nTop Recommendations:\n")
 
-    for i, (anime, score) in enumerate(data, start=1):
+    for i, (anime, score, reasons) in enumerate(data, start=1):
         print(f"{i}. {anime}")
         print(f"   Similarity: {score:.2f}")
+        print(f"   Why: {' | '.join(reasons)}")

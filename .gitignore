@@ -4,4 +4,6 @@ __pycache__/
 *.pyc
 .vscode/
 models/
-data/
+
+data/anime.csv
+data/processed_anime.csv

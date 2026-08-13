@@ -3,11 +3,17 @@ from rapidfuzz import process, fuzz
 import numpy as np
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 df = pd.read_csv("data/cleaned_anime.csv")
 df = df.fillna("")
 embeddings = np.load("data/anime_embeddings.npy")
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+df["display_title"] = df["title"]
+df["display_title_english"] = df["title_english"].fillna("")
 
 df["title"] = df["title"].str.lower().str.strip()
 df["title_english"] = df["title_english"].fillna("").str.lower().str.strip()
@@ -95,11 +101,33 @@ def is_same_series(base, candidate):
     base = normalize_title(base)
     candidate = normalize_title(candidate)
 
-    return (
-        base == candidate 
-        or base in candidate 
-        or candidate in base
-    )
+    if base == candidate:
+        return True
+
+    if base in candidate or candidate in base:
+        return True
+
+    franchise_groups = [
+        ["dragon ball", "dragon ball z", "dragon ball super", "dragon ball gt", "dragon ball kai"],
+        ["naruto", "naruto shippuden"],
+        ["one piece"],
+        ["bleach"],
+        ["attack on titan"],
+        ["my hero academia"],
+        ["demon slayer"],
+        ["jujutsu kaisen"],
+        ["jojo no kimyou na bouken", "jojo no kimyou na bouken part 2", "jojo no kimyou na bouken part 3", "jojo no kimyou na bouken part 4", "jojo no kimyou na bouken part 5", "jojo no kimyou na bouken part 6"],
+    ]
+
+    for group in franchise_groups:
+
+        base_match = any(base.startswith(x) for x in group)
+        candidate_match = any(candidate.startswith(x) for x in group)
+
+        if base_match and candidate_match:
+            return True
+
+    return False
 
 def explain_recommendation(base_idx, rec_idx):
 
@@ -108,14 +136,45 @@ def explain_recommendation(base_idx, rec_idx):
 
     reasons = []
 
-    if base["genres"] == rec["genres"]:
-        reasons.append("Similar genres")
+    base_genres = set(base["genres"].split("|"))
+    rec_genres = set(rec["genres"].split("|"))
 
-    if base["themes"] == rec["themes"]:
-        reasons.append("Similar themes")
+    shared_genres = base_genres.intersection(rec_genres)
+
+    if shared_genres:
+        reasons.append(
+            "⚔️ Similar genres: " + ", ".join(shared_genres)
+        )
+
+    base_themes = set(base["themes"].split("|"))
+    rec_themes = set(rec["themes"].split("|"))
+
+    shared_themes = base_themes.intersection(rec_themes)
+
+    if shared_themes:
+        reasons.append(
+            "🎭 Similar themes: " + ", ".join(shared_themes)
+        )
 
     if base["type"] == rec["type"]:
-        reasons.append("Same format")
+        reasons.append(
+            "📺 Same format: " + str(base["type"])
+        )
+
+    if base["source"] == rec["source"]:
+        reasons.append(
+            "📖 Same source: " + str(base["source"])
+        )
+
+    if base["demographics"] == rec["demographics"]:
+        reasons.append(
+            "👥 Same demographic: " + str(base["demographics"])
+        )
+
+    if not reasons:
+        reasons.append(
+            "🧠 Strong semantic similarity"
+        )
 
     return reasons
 
@@ -135,6 +194,9 @@ def recommend_from_index(index):
     for idx, score in enumerate(final_scores):
 
         if idx == index:
+            continue
+
+        if df.iloc[idx]["members"] < 5000:
             continue
 
         original_title = df.iloc[idx]["title"]
@@ -203,6 +265,40 @@ def recommend_from_index(index):
 
     for idx in selected:
 
+        original_title = df.iloc[idx]["display_title"]
+        english_title = df.iloc[idx]["display_title_english"]
+
+        title = (
+            english_title
+            if english_title != ""
+            else original_title
+        )
+
+        reasons = explain_recommendation(index, idx)
+
+        recommendations.append(
+            (title, final_scores[idx], reasons)
+        )
+
+    return recommendations
+
+def recommend_from_query(query, top_k=10):
+
+    query_embedding = model.encode([query])
+
+    query_scores = cosine_similarity(
+        query_embedding,
+        embeddings
+    )[0]
+
+    candidate_indices = np.argsort(
+        query_scores
+    )[::-1]
+
+    recommendations = []
+
+    for idx in candidate_indices:
+
         original_title = df.iloc[idx]["title"]
         english_title = df.iloc[idx]["title_english"]
 
@@ -212,9 +308,29 @@ def recommend_from_index(index):
             else original_title
         )
 
+        reasons = []
+
+        if df.iloc[idx]["genres"] != "":
+            reasons.append(
+                f"Genres: {df.iloc[idx]['genres']}"
+            )
+
+        if df.iloc[idx]["themes"] != "":
+            reasons.append(
+                f"Themes: {df.iloc[idx]['themes']}"
+            )
+
+        if df.iloc[idx]["demographics"] != "":
+            reasons.append(
+                f"Demographic: {df.iloc[idx]['demographics']}"
+            )
+
         recommendations.append(
-            (title, final_scores[idx])
+            (title, query_scores[idx], reasons)
         )
+
+        if len(recommendations) == top_k:
+            break
 
     return recommendations
 
