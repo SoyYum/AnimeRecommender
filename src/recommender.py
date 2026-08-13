@@ -8,7 +8,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 df = pd.read_csv("data/cleaned_anime.csv")
 df = df.fillna("")
-embeddings = np.load("data/anime_embeddings.npy")
+embeddings = np.load(
+    "data/anime_embeddings.npy",
+    mmap_mode="r"
+)
 
 from functools import lru_cache
 
@@ -17,7 +20,6 @@ def load_model():
     return SentenceTransformer("all-MiniLM-L6-v2")
 
 
-model = load_model()
 
 df["display_title"] = df["title"]
 df["display_title_english"] = df["title_english"].fillna("")
@@ -290,6 +292,8 @@ def recommend_from_index(index):
     return recommendations
 
 def recommend_from_query(query, top_k=10):
+
+    model = load_model()
 
     query_embedding = model.encode([query])
 
