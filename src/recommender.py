@@ -46,7 +46,6 @@ vectorizer = TfidfVectorizer(
 )
 
 tfidf_matrix = vectorizer.fit_transform(df["combined_features"])
-similarity = cosine_similarity(tfidf_matrix)
 
 titles = (df["title"] + " " + df["title_english"]).tolist()
 
@@ -188,7 +187,10 @@ def explain_recommendation(base_idx, rec_idx):
     return reasons
 
 def recommend_from_index(index):
-    scores = similarity[index]
+    scores = cosine_similarity(
+        tfidf_matrix[index],
+        tfidf_matrix
+    )[0]
     sbert_scores = cosine_similarity([embeddings[index]],embeddings)[0]
     final_scores = (
         0.4 * scores +
