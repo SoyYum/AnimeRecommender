@@ -8,17 +8,19 @@ def load_recommender():
     from src.recommender import (
         recommend,
         recommend_from_index,
-        recommend_from_query
+        recommend_from_query,
+        df
     )
 
     return (
         recommend,
         recommend_from_index,
-        recommend_from_query
+        recommend_from_query,
+        df
     )
 
 
-recommend, recommend_from_index, recommend_from_query = load_recommender()
+recommend, recommend_from_index, recommend_from_query, df = load_recommender()
 
 st.set_page_config(
     page_title="WeebWise",
