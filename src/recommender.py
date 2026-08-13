@@ -10,7 +10,14 @@ df = pd.read_csv("data/cleaned_anime.csv")
 df = df.fillna("")
 embeddings = np.load("data/anime_embeddings.npy")
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+from functools import lru_cache
+
+@lru_cache()
+def load_model():
+    return SentenceTransformer("all-MiniLM-L6-v2")
+
+
+model = load_model()
 
 df["display_title"] = df["title"]
 df["display_title_english"] = df["title_english"].fillna("")
