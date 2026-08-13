@@ -1,12 +1,24 @@
 import streamlit as st
 import requests
 
-from src.recommender import (
-    recommend,
-    recommend_from_index,
-    recommend_from_query,
-    df
-)
+
+
+@st.cache_resource
+def load_recommender():
+    from src.recommender import (
+        recommend,
+        recommend_from_index,
+        recommend_from_query
+    )
+
+    return (
+        recommend,
+        recommend_from_index,
+        recommend_from_query
+    )
+
+
+recommend, recommend_from_index, recommend_from_query = load_recommender()
 
 st.set_page_config(
     page_title="WeebWise",
